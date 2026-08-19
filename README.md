@@ -1,56 +1,46 @@
 # PayConnect Log Extractor
 
-Desktop tool that searches MinIO log exports for one or more
-Pay IDs and pulls out the full request/response block for each match --
-one text file per Pay ID.
+Pulls full request/response blocks from MinIO log exports for one or more Pay IDs. Outputs one `.txt` per Pay ID.
 
 ## Setup
 
-1. Install Python 3.9+.
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Copy `config.example.json` to `config.json` and fill in your details:
-   ```json
-   {
-     "endpoint": "https://sample.net",
-     "username": "your-console-username",
-     "password": "your-console-password",
-     "bucket": "payconnect-log-exports-prod",
-     "base_prefix": "logs/",
-     "extensions": ".log,.gz,.txt",
-     "block_marker": "Logging Request",
-     "workers": 4,
-     "out_dir": ""
-   }
-   ```
-   `config.json` is gitignored -- it never gets committed.
+```bash
+pip install -r requirements.txt
+cp config.example.json config.json
+```
+
+Fill in `config.json`:
+
+```json
+{
+  "endpoint": "https://sample.net",
+  "username": "your-console-username",
+  "password": "your-console-password",
+  "bucket": "payconnect-log-exports-prod",
+  "base_prefix": "logs/",
+  "extensions": ".log,.gz,.txt",
+  "block_marker": "Logging Request",
+  "workers": 4,
+  "out_dir": ""
+}
+```
 
 ## Run
 
-```
+```bash
 python payid_log_extractor.py
 ```
 
-Enter a date range (optional -- leave blank to search every date) and one
-or more Pay IDs (one per line, or comma-separated), pick a save folder, and
-click **Search & extract**. Each Pay ID gets its own `.txt` file containing
-every matching request block found.
+GUI prompts for date range (optional), Pay ID(s) (comma-separated or one per line), and output folder. Zero-match Pay IDs are logged, no empty file written.
 
 ## How it works
 
-- Logs into the MinIO console API (same login as the browser).
-- Lists log files under `base_prefix` (paginated automatically).
-- Downloads and, if gzipped, decompresses each file in parallel
-  (`workers` controls how many at once).
-- Groups lines into blocks using `block_marker` as the start-of-request
-  marker, and writes out any block containing a searched Pay ID.
-- Pay IDs with zero matches are reported and skipped (no empty file).
+- Auth: same login as MinIO console web UI
+- Lists objects under `base_prefix`, paginated
+- Downloads + decompresses (`.gz`) in parallel, concurrency = `workers`
+- Splits log lines into blocks on `block_marker`, matches Pay ID against each block, writes hits
 
 ## Notes
 
-- `block_marker` may need adjusting per log source if the logger format
-  differs between services.
-- Increase `workers` for faster scans on a good connection; lower it if
-  requests start timing out.
+- `block_marker` is logger-format-dependent — adjust per service if blocks aren't splitting correctly
+- Tune `workers` up/down based on connection stability (timeouts = lower it)
