@@ -1,0 +1,9 @@
+config.json
+*.txt
+!config.example.json
+!requirements.txt
+!README.md
+__pycache__/
+*.pyc
+.venv/
+venv/

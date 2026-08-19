@@ -1,0 +1,11 @@
+{
+  "endpoint": "https://sample.net",
+  "username": "your-username",
+  "password": "your-password",
+  "bucket": "payconnect-log-exports-prod",
+  "base_prefix": "logs/",
+  "extensions": ".log,.gz,.txt",
+  "block_marker": "Logging Request",
+  "workers": 4,
+  "out_dir": ""
+}
