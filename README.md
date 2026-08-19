@@ -1,6 +1,6 @@
 # PayConnect Log Extractor
 
-Desktop tool that searches PayConnect's MinIO log exports for one or more
+Desktop tool that searches MinIO log exports for one or more
 Pay IDs and pulls out the full request/response block for each match --
 one text file per Pay ID.
 
@@ -14,7 +14,7 @@ one text file per Pay ID.
 3. Copy `config.example.json` to `config.json` and fill in your details:
    ```json
    {
-     "endpoint": "https://minio-payconnect.vm2-aks.apolloglobal.net",
+     "endpoint": "https://sample.net",
      "username": "your-console-username",
      "password": "your-console-password",
      "bucket": "payconnect-log-exports-prod",
