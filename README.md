@@ -1,6 +1,6 @@
 # PayConnect Log Extractor
 
-Pulls full request/response blocks from MinIO log exports for one or more Pay IDs. Outputs one `.txt` per Pay ID.
+Pulls full request/response blocks from MinIO log exports for one or more Pay IDs/Txn ref no. Outputs one `.txt` per Pay ID.
 
 ## Setup
 
