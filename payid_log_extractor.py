@@ -1,16 +1,3 @@
-"""
-PayConnect Log Extractor
-Simple UI: pick a date range (optional) and Pay ID(s), get the full
-request/response block for each Pay ID pulled out of MinIO log exports.
-
-All connection details (console URL, credentials, bucket, etc.) live in
-config.json next to this script -- copy config.example.json to config.json
-and fill it in before running.
-
-Requires: pip install -r requirements.txt
-Run:      python payid_log_extractor.py
-"""
-
 import os
 import sys
 import gzip
@@ -59,7 +46,7 @@ class LogSearchApp(tk.Tk):
     def __init__(self, config):
         super().__init__()
         self.config_data = config
-        self.title("PayConnect Log Extractor")
+        self.title("Payconnect Log Extractor")
         self.geometry("560x560")
         self.minsize(500, 500)
 
@@ -105,13 +92,8 @@ class LogSearchApp(tk.Tk):
 
         header = ttk.Frame(outer)
         header.pack(fill="x", pady=(0, 4))
-        ttk.Label(header, text="PayConnect log extractor", font=("Segoe UI", 13, "bold"),
+        ttk.Label(header, text="Payconnect log extractor", font=("Segoe UI", 13, "bold"),
                   background="#f4f6f8", foreground="#20303f").pack(anchor="w")
-        ttk.Label(
-            header,
-            text=f"{self.config_data['bucket']} @ {self.config_data['endpoint']}",
-            style="Hint.TLabel",
-        ).pack(anchor="w")
 
         form = ttk.Labelframe(outer, text="Date range (optional)", padding=10)
         form.pack(fill="x", pady=(12, 8))
@@ -124,9 +106,10 @@ class LogSearchApp(tk.Tk):
         ttk.Label(form, text="Format: YYYY-MM-DD. Leave blank to search every date.",
                   style="Hint.TLabel").grid(row=1, column=0, columnspan=4, sticky="w", pady=(4, 0))
 
-        payid_frm = ttk.Labelframe(outer, text="Pay ID(s)", padding=10)
+        payid_frm = ttk.Labelframe(outer, text="Search Pay ID or Txn Ref No", padding=10)
         payid_frm.pack(fill="both", expand=True, pady=(0, 8))
-        ttk.Label(payid_frm, text="One per line, or comma-separated.", style="Hint.TLabel").pack(anchor="w")
+        ttk.Label(payid_frm, text="One per line, or comma-separated.",
+                  style="Hint.TLabel").pack(anchor="w")
         self.payid_text = tk.Text(payid_frm, height=8, font=("Consolas", 10))
         self.payid_text.pack(fill="both", expand=True, pady=(4, 0))
 
@@ -198,7 +181,7 @@ class LogSearchApp(tk.Tk):
         out_dir = self.out_var.get().strip()
 
         if not out_dir or not pay_ids:
-            messagebox.showwarning("Missing info", "Please enter at least one Pay ID and an output folder.")
+            messagebox.showwarning("Missing info", "Please enter at least one search ID and an output folder.")
             return
 
         from_date = to_date = None
@@ -471,7 +454,7 @@ class LogSearchApp(tk.Tk):
             self.stop_btn.configure(state="disabled")
 
     def _show_not_found(self, not_found):
-        msg = "No logs found for these Pay ID(s):\n\n" + "\n".join(not_found)
+        msg = "No logs found for these search ID(s):\n\n" + "\n".join(not_found)
         messagebox.showinfo("Not found", msg)
 
 
